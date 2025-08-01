@@ -1,0 +1,6 @@
+path: /home/tonytsai/work/project/allinvision_prototype/datasets/african-wildlife
+train: train
+validation: valid
+
+class_num: 4
+class_list: ['buffalo', 'elephant', 'rhino', 'zebra']
