@@ -68,7 +68,8 @@ class YOLORichProgressBar(RichProgressBar):
             self._reset_progress_bar_ids()
             reconfigure(**self._console_kwargs)
             self._console = Console()
-            self._console.clear_live()
+            if hasattr(self._console, "_live_stack") and self._console._live_stack:
+                self._console.clear_live()
             self.progress = YOLOCustomProgress(
                 *self.configure_columns(trainer),
                 auto_refresh=False,
@@ -107,7 +108,7 @@ class YOLORichProgressBar(RichProgressBar):
         epoch_descript = "[cyan]Train [white]|"
         batch_descript = "[green]Train [white]|"
         metrics = self.get_metrics(trainer, pl_module)
-        metrics.pop("v_num")
+        metrics.pop("v_num", None)
         for metrics_name, metrics_val in metrics.items():
             if "Loss_step" in metrics_name:
                 epoch_descript += f"{metrics_name.removesuffix('_step').split('/')[1]: ^9}|"
