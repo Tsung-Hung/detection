@@ -38,16 +38,20 @@ class DetectionTrainer:
             self.cfg = cfg
 
         self.model = TrainModel(self.cfg)
-        self.trainer = Trainer(
-            accelerator="auto", 
+        self.trainer = self._get_trainer()
+
+    def _get_trainer(self):
+        trainer_params = self.cfg.task.get("trainer", {})
+        return Trainer(
+            accelerator=trainer_params.get("accelerator", "auto"),
             max_epochs=self.cfg.task.epoch,
-            precision="16-mixed", 
-            logger=True,
-            log_every_n_steps=1,
-            gradient_clip_val=10,
-            gradient_clip_algorithm="norm",
-            deterministic=True,
-            enable_progress_bar=True
+            precision=trainer_params.get("precision", "16-mixed"),
+            logger=trainer_params.get("logger", True),
+            log_every_n_steps=trainer_params.get("log_every_n_steps", 1),
+            gradient_clip_val=trainer_params.get("gradient_clip_val", 10),
+            gradient_clip_algorithm=trainer_params.get("gradient_clip_algorithm", "norm"),
+            deterministic=trainer_params.get("deterministic", True),
+            enable_progress_bar=trainer_params.get("enable_progress_bar", True)
         )
 
     def train(self):
