@@ -12,16 +12,16 @@ data:
   shuffle: True
   pin_memory: True
   data_augment:
-    Mosaic: 1
+    Mosaic: 0
     # MixUp: 1
     # HorizontalFlip: 0.5
-    RandomCrop: 1
+    RandomCrop: 0
     RemoveOutliers: 1e-8
 
 optimizer:
   type: SGD
   args:
-    lr: 0.01
+    lr: 0.001
     weight_decay: 0.0005
     momentum: 0.937
     nesterov: true
@@ -47,7 +47,7 @@ scheduler:
   args:
     total_iters: ${task.epoch}
     start_factor: 1
-    end_factor: 0.01
+    end_factor: 0.001
 
 ema:
   enable: true
