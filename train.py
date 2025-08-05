@@ -1,7 +1,6 @@
-import torch
 from hydra import compose, initialize
-from yolo.tools.solver import TrainModel
 from lightning import Trainer
+from allinvision_detection.yolo.tools.solver import TrainModel
 
 class DetectionTrainer:
     def __init__(
@@ -11,8 +10,6 @@ class DetectionTrainer:
         model_name="v9-s",
         dataset_name=None,
         class_num=4,
-        weight_path=None,
-        device="cuda:0",
         batch_size=None,
         epochs=100,
     ):
@@ -24,8 +21,6 @@ class DetectionTrainer:
             ]
             if dataset_name:
                 overrides.append(f"dataset={dataset_name}")
-            if weight_path:
-                overrides.append(f"weight={weight_path}")
 
             cfg = compose(
                 config_name=config_name,
@@ -38,12 +33,16 @@ class DetectionTrainer:
             
             self.cfg = cfg
 
-        self.device = torch.device(device)
         self.model = TrainModel(self.cfg)
         self.trainer = Trainer(
             accelerator="auto", 
+            max_epochs=self.cfg.task.epoch,
             precision="16-mixed", 
             logger=True,
+            log_every_n_steps=1,
+            gradient_clip_val=10,
+            gradient_clip_algorithm="norm",
+            deterministic=True,
             enable_progress_bar=True
         )
 
@@ -51,15 +50,14 @@ class DetectionTrainer:
         self.trainer.fit(self.model)
 
 if __name__ == "__main__":
+    # Example usage
     trainer = DetectionTrainer(
         config_path="yolo/config",
         config_name="config",
         model_name="v9-t",
         dataset_name="africanwildlife",
         class_num=4,
-        weight_path=None,
-        device="cuda:0",
-        batch_size=8,
+        batch_size=32,
         epochs=10,
     )
     trainer.train()
