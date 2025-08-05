@@ -5,11 +5,11 @@ from typing import Optional
 import yaml
 
 class DetectionTrainer:
+    DEFAULT_CONFIG_PATH = "yolo/config"
+    DEFAULT_CONFIG_NAME = "config"
     def __init__(
         self,
         dataset_path: Optional[str] = None,
-        config_path: Optional[str] = "yolo/config",
-        config_name: Optional[str] = "config",
         model_name: Optional[str] = "v9-s",
         batch_size: Optional[int] = 16,
         epochs: Optional[int] = 100,
