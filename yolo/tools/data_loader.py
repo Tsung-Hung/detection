@@ -240,6 +240,7 @@ def create_dataloader(data_cfg: DataConfig, dataset_cfg: DatasetConfig, task: st
         dataset,
         batch_size=data_cfg.batch_size,
         num_workers=data_cfg.cpu_num,
+        shuffle=data_cfg.shuffle,
         pin_memory=data_cfg.pin_memory,
         collate_fn=collate_fn,
     )
